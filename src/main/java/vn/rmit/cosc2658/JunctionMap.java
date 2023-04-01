@@ -28,8 +28,8 @@ public class JunctionMap {
     // sum() complexity = O(N) with N is the number of elements in the array
     private int sum(int[] array) {  // assuming array is not empty
         int sum = array[0];
-        for (int i = 0; i < array.length; i++) {
-            sum += array[i];
+        for (int j : array) {
+            sum += j;
         }
         return sum;
     }
