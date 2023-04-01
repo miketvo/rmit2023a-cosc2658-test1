@@ -1,0 +1,60 @@
+Time complexity analysis for maxStrengthPower():
+
+int maxStrengthPower(int[] items)
+    N = length(items)                           c1
+    maxStrength = -INFINITY                     c2
+    for start = 0 to (N - 1)                    c3 * N
+        for stop = start to (N - 1)             c4 * N * ((N / 2) - 1)
+            sum = 0                             c5 * N * ((N / 2) - 1) - 1
+            for i = start to stop               c6 * N * ((N / 2) - 1)^2 - 1
+                sum += items[i]                 c7 * N * ((N / 2) - 1)^2 - 2
+            if (sum > maxStrength)              c8 * N * ((N / 2) - 1) - 1
+                maxStrength = sum               c9 * N * ((N / 2) - 1) - 1
+    return maxStrength                          c10
+
+So:
+T(N) = c1 + c2 + c3 * N + c4 * N * ((N / 2) - 1) + c5 * N * ((N / 2) - 1) - 1 + c6 * N * ((N / 2) - 1)^2 - 1 + c7 * N * ((N / 2) - 1)^2 - 2 + c8 * N * ((N / 2) - 1) - 1 + c9 * N * ((N / 2) - 1) - 1 + c10
+     = (c1 + c2 + c3 + c10 - 6) + N*(c3 + c4*((N / 2) - 1) + c5*((N / 2) - 1) + c6*((N / 2) - 1)^2 + c7*((N / 2) - 1)^2 + c8*((N / 2) - 1) + c9*((N / 2) - 1))
+     = C + N*(c3 + c4*((N / 2) - 1) + c5*((N / 2) - 1) + c6*((N / 2) - 1)^2 + c7*((N / 2) - 1)^2 + c8*((N / 2) - 1) + c9*((N / 2) - 1))
+     = C + N*( C + ((N / 2) - 1) * (c4 + c5 + c8 + c9 + (c6 + c7) * ((N / 2) - 1)) )
+     = C + N*( C + ((N / 2) - 1) * (C + C*((N / 2) - 1)) )
+     = C + N*( C + ((N / 2) - 1) * (N / 2) )
+     = C + N*( C + (N^2)/4 - N/2 )
+     = C + N*C - N^2*0.5 + N^3*0.25
+Remove the less significant components and multiplicative constants, we have:
+T(N) = O(N^3)
+
+
+Better algorithm:
+
+This problem is a RangeQuery problem. When receiving int[] items, we will precalculate the sum for all ranges from 0 to i with i starting from 1 to N - 1. Store this in an internal array "sums[]":
+After this, sum(i, j) where i and j are the starting point and end point of the sub array can be easily queried using the following formula:
+    sum()
+
+
+Overall, our new algorithm will be as follows:
+
+// pre-calculation step. This step has the time complexity of O(N)
+// define sum[i] = A[0] + A[1] + ... + A[i]
+sums[0] = items[0]
+for i = 1 to N - 1
+    sums[i] = sums[i-1] + items[i]
+
+// query answering step. Note that the time complexity for this operation is O(1) - constant time
+sum(int start, int stop)
+    return sums[stop] - sums[start] + items[start]
+
+// calculate maxStrengthPower. Now, it is only O(N^2)
+int maxStrengthPower(int[] items)
+    N = length(items)                           c1
+    maxStrength = -INFINITY                     c2
+    for start = 0 to (N - 1)                    c3 * N
+        for stop = start to (N - 1)             c4 * N * ((N / 2) - 1)
+            currentSum = sum(start, stop)       c5 * N * ((N / 2) - 1) - 1
+            if (sum > maxStrength)              c6 * N * ((N / 2) - 1) - 1
+                maxStrength = currentSum        c7 * N * ((N / 2) - 1) - 1
+    return maxStrength                          c8
+
+Thus, following the same logic as above, our algorithm will have a time complexity of:
+    T(N) = O(N^2)
+Which is better than O(N^3), at the cost of O(N) space complexity. Overall, this is better.
