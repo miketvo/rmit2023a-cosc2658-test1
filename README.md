@@ -94,5 +94,4 @@
 <ul>
 <li>Your source code should be placed and submitted as a single zip file on canvas</li>
 </ul>
-<h3>Rubric</h3>
-<p>See Rubric below</p></div>
+</div>
