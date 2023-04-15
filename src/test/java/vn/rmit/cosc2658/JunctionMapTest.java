@@ -51,5 +51,9 @@ class JunctionMapTest {
                 IllegalArgumentException.class,
                 () -> test3.getShortestPath(0, 0)
         ).getMessage());
+
+        assertEquals("0 -> 1", test1.getShortestPath(0, 1));
+        assertEquals("0 -> 1 -> 3", test1.getShortestPath(0, 3));
+        assertEquals("", test1.getShortestPath(1, 0));
     }
 }
